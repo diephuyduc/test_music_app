@@ -2,7 +2,9 @@ package com.example.mymvvm.model;
 
 import android.net.Uri;
 
-public class Song {
+import java.io.Serializable;
+
+public class Song implements Serializable {
     private long id;
     private String title;
 

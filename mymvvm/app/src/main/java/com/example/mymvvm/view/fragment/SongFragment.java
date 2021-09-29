@@ -1,5 +1,7 @@
 package com.example.mymvvm.view.fragment;
 
+import static com.example.mymvvm.Constants.SONG_KEY;
+
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -61,6 +63,9 @@ public class SongFragment extends Fragment implements ISongClick {
     @Override
     public void clickASong(Song song) {
         Intent intent = new Intent(getActivity(), MusicService.class);
-        intent
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(SONG_KEY, song);
+        intent.putExtra(SONG_KEY, bundle);
+        getActivity().startService(intent);
     }
 }
