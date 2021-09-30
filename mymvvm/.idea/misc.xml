@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Documents/GitHub/test_music_app/mymvvm/app/src/main/res/layout/activity_main.xml" value="0.20416666666666666" />
+        <entry key="..\:/Documents/GitHub/test_music_app/mymvvm/app/src/main/res/layout/activity_playing.xml" value="0.1" />
+        <entry key="..\:/Documents/GitHub/test_music_app/mymvvm/app/src/main/res/layout/minibar.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/dhduc/AndroidStudioProjects/mymvvm/app/src/main/res/drawable/bg_tranperent_corner_16.xml" value="0.2708333333333333" />
         <entry key="..\:/Users/dhduc/AndroidStudioProjects/mymvvm/app/src/main/res/drawable/ic_baseline_clear_24.xml" value="0.14635416666666667" />
         <entry key="..\:/Users/dhduc/AndroidStudioProjects/mymvvm/app/src/main/res/drawable/ic_baseline_pause_circle_filled_24.xml" value="0.14635416666666667" />

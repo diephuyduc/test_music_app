@@ -69,7 +69,7 @@ public class SongFragment extends Fragment implements ISongClick {
         Bundle bundle = new Bundle();
         bundle.putSerializable(SONG_KEY, song);
         intent.putExtra(SONG_KEY, bundle);
-        Toast.makeText(getActivity(), "Ddax nhan vap song", Toast.LENGTH_SHORT).show();
+       // Toast.makeText(getActivity(), "Ddax nhan vap song", Toast.LENGTH_SHORT).show();
         getActivity().startService(intent);
     }
 }

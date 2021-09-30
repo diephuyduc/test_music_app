@@ -1,5 +1,7 @@
 package com.example.mymvvm;
 
+import static com.example.mymvvm.Constants.MY_ACTION_KEY;
+import static com.example.mymvvm.Constants.MY_SONG_KEY;
 import static com.example.mymvvm.Constants.SONG_KEY;
 
 import android.Manifest;
@@ -36,6 +38,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -43,6 +46,7 @@ import com.example.mymvvm.adapter.SongAdapter;
 import com.example.mymvvm.model.Song;
 import com.example.mymvvm.repo.InitSong;
 import com.example.mymvvm.service.MusicService;
+import com.example.mymvvm.ultis.MAction;
 import com.example.mymvvm.view.fragment.AlbumFragment;
 import com.example.mymvvm.view.fragment.SingerFragment;
 import com.example.mymvvm.view.fragment.SongFragment;
@@ -62,14 +66,45 @@ public class MainActivity extends AppCompatActivity {
     private Song songNow;
     private TextView name, singer;
     private ImageView playOrPause;
+    private Boolean isPLaying;
 
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-                Song song = (Song) intent.getBundleExtra(SONG_KEY).get(SONG_KEY);
-                songNow = song;
+                if(intent.getExtras()!=null){
+                    Bundle bundle = intent.getExtras();
+                    songNow = (Song) bundle.get(MY_SONG_KEY);
+                    MAction mAction = (MAction) bundle.get(MY_ACTION_KEY);
+                     isPLaying = (Boolean) bundle.get("status");
+                    handleAction(mAction);
+                    if(songNow!=null){
+                        name.setText(songNow.getTitle()+"");
+                      singer.setText(songNow.getSinger()+"");
+                    }
+                }
         }
     };
+
+    private void handleAction(MAction mAction) {
+        switch (mAction){
+            case PLAY:
+                playOrPause.setImageResource(R.drawable.ic_baseline_pause_circle_filled_24);
+                break;
+            case PAUSE:
+                playOrPause.setImageResource(R.drawable.ic_baseline_play_circle_filled_24);
+            case STOP:
+        }
+    }
+
+    private void sendActionService(MAction mAction){
+        Intent intent = new Intent(MainActivity.this, MusicService.class );
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(MY_ACTION_KEY, mAction);
+        intent.putExtra(MY_ACTION_KEY,bundle);
+        startService(intent);
+    }
+
+
 
 
     @Override
@@ -124,19 +159,33 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if(songNow == null){
-            miniBar.setVisibility(View.GONE);
+        name = miniBar.findViewById(R.id.name);
+        singer = miniBar.findViewById(R.id.singer);
+
+        playOrPause = miniBar.findViewById(R.id.mini_play_pause);
+        playOrPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                playOrPauseOnclick();
+            }
+        });
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter("send_action"));
+
+
+
+
+
+    }
+
+    private void playOrPauseOnclick() {
+        if(isPLaying){
+            sendActionService(MAction.PAUSE);
+   //         playOrPause.setImageResource(R.drawable.ic_baseline_play_circle_filled_24);
         }
         else{
-            name = miniBar.findViewById(R.id.name);
-            singer = miniBar.findViewById(R.id.singer);
-            name.setText(songNow.getTitle());
-            singer.setText(songNow.getSinger());
+            sendActionService(MAction.PLAY);
+ //           playOrPause.setImageResource(R.drawable.ic_baseline_pause_circle_filled_24);
         }
-                IntentFilter intentFilter = new IntentFilter();
-
-        registerReceiver(broadcastReceiver, intentFilter);
-
     }
 
     void loadFragment(Fragment fragment) {
@@ -145,5 +194,9 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+    }
 }

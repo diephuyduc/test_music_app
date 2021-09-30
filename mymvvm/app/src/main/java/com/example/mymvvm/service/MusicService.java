@@ -19,6 +19,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.mymvvm.R;
 import com.example.mymvvm.model.Song;
@@ -27,7 +28,7 @@ import com.example.mymvvm.ultis.MAction;
 import java.util.Date;
 
 public class MusicService extends Service {
-    MediaPlayer mediaPlayer;
+    MediaPlayer mediaPlayer = new MediaPlayer();
     Song song;
     boolean isPlaying = true;
     MAction mAction = MAction.PLAY;
@@ -44,7 +45,9 @@ public class MusicService extends Service {
         if (intent.getBundleExtra(SONG_KEY) != null) {
             song = (Song) intent.getBundleExtra(SONG_KEY).get(SONG_KEY);
             if (song != null) {
-                mAction = MAction.PLAY;
+              //  mAction = MAction.PLAY;
+                playSong(song);
+                isPlaying=true;
             }
 
 
@@ -66,11 +69,12 @@ public class MusicService extends Service {
     private void handleAction(MAction mAction) {
         switch (mAction) {
             case PLAY:
-                playSong(song);
+                resumeSong();
                 break;
             case PREV:
+                changeSongPre();
             case NEXT:
-                changeSong();
+                changeSongNext();
                 break;
             case PAUSE:
                 pauseASong();
@@ -86,15 +90,25 @@ public class MusicService extends Service {
         isPlaying = false;
         mediaPlayer.pause();
         sendNotification(song);
+        sendActionToMain(MAction.PAUSE);
     }
 
-    private void changeSong() {
+    private void changeSongNext() {
+
+        sendActionToMain(MAction.NEXT);
+        sendNotification(song);
+    }
+
+    private void changeSongPre() {
+
+        sendActionToMain(MAction.PREV);
         sendNotification(song);
     }
 
 
 
     private void clear() {
+        sendActionToMain(MAction.STOP);
         stopSelf();
     }
 
@@ -104,8 +118,18 @@ public class MusicService extends Service {
             mediaPlayer.start();
             isPlaying = true;
             sendNotification(song);
+            sendActionToMain(MAction.PLAY);
+
         }
 
+    }
+    public void  resumeSong(){
+        if(song!=null){
+            mediaPlayer.start();
+            isPlaying = true;
+            sendNotification(song);
+            sendActionToMain(MAction.PLAY);
+        }
     }
 
     public void sendNotification(Song song) {
@@ -151,6 +175,16 @@ public class MusicService extends Service {
         intent.putExtra(MY_SONG_KEY, bundle);
         Log.d("br", "getPendingIntentForPrevOrNext: " + song.toString());
         return PendingIntent.getBroadcast(getApplicationContext(), (int) new Date().getTime(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private void sendActionToMain(MAction mAction){
+        Intent intent = new Intent("send_action");
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(MY_ACTION_KEY, mAction);
+        bundle.putSerializable(MY_SONG_KEY, song);
+        bundle.putBoolean("status", isPlaying);
+        intent.putExtras(bundle);
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 
     @Override
