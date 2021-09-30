@@ -16,10 +16,17 @@
 
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigatin"
 
    />
-
+`<include
+    app:layout_constraintBottom_toTopOf="@+id/bottom_navigatin"
+    android:id="@+id/minibar"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_marginHorizontal="10dp"
+    layout="@layout/minibar"
+    />
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigatin"
         app:menu="@menu/bottom_navigation"

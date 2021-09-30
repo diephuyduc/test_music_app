@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mymvvm.Interface.ISongClick;
@@ -41,6 +43,12 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
                 holder.tvName.setText(song.getTitle());
                 holder.tvSinger.setText(song.getSinger());
                 holder.imgSong.setImageResource(R.drawable.songlogo);
+                holder.cardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        iSongClick.clickASong(song);
+                    }
+                });
     }
 
     @Override
@@ -54,8 +62,10 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
     public class SongViewHolder extends RecyclerView.ViewHolder{
         ImageView imgSong;
         TextView tvName, tvSinger;
+        CardView cardView;
         public SongViewHolder(@NonNull View itemView) {
             super(itemView);
+            cardView = itemView.findViewById(R.id.card_item);
             imgSong = itemView.findViewById(R.id.img_song);
             tvName =itemView.findViewById(R.id.title_song);
             tvSinger = itemView.findViewById(R.id.singer_song);

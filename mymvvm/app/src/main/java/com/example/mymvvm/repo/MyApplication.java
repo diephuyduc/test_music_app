@@ -1,6 +1,5 @@
 package com.example.mymvvm.repo;
 
-import static com.example.mymvvm.Constants.CHANNEL_ID;
 import static com.example.mymvvm.Constants.CHANNEL_NAME;
 
 import android.app.Application;
@@ -9,6 +8,13 @@ import android.app.NotificationManager;
 import android.os.Build;
 
 public class MyApplication extends Application {
+    public static final  String CHANNEL_ID = "my_notification";
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        createNotificationChannel();
+    }
+
     private void createNotificationChannel() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

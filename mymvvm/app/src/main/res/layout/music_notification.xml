@@ -5,7 +5,8 @@
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:background="@drawable/layout_corrner_16"
-    android:padding="10dp"
+
+
     android:weightSum="5">
 
     <ImageView
@@ -31,13 +32,17 @@
             android:orientation="vertical">
 
             <TextView
+                android:singleLine="true"
+
+
                 android:id="@+id/song_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Name of song"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
             <TextView
+                android:singleLine="true"
                 android:id="@+id/song_singer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -48,6 +53,7 @@
         </LinearLayout>
 
         <LinearLayout
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
@@ -57,32 +63,32 @@
 
             <ImageView
                 android:id="@+id/pre"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_margin="5dp"
                 android:layout_weight="2"
                 android:src="@drawable/ic_baseline_skip_previous_24" />
 
             <ImageView
                 android:id="@+id/pause_play"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_margin="5dp"
                 android:layout_weight="2"
                 android:src="@drawable/ic_baseline_pause_circle_filled_24" />
 
             <ImageView
                 android:id="@+id/next"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_margin="5dp"
                 android:layout_weight="2"
                 android:src="@drawable/ic_baseline_skip_next_24" />
 
             <ImageView
                 android:id="@+id/clear"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:src="@drawable/ic_baseline_clear_24" />

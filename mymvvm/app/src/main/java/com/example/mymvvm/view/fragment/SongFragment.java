@@ -15,8 +15,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.mymvvm.Interface.ISongClick;
+import com.example.mymvvm.MainActivity;
 import com.example.mymvvm.R;
 import com.example.mymvvm.adapter.SongAdapter;
 import com.example.mymvvm.model.Song;
@@ -51,7 +53,8 @@ public class SongFragment extends Fragment implements ISongClick {
         songViewModel.getSongListMutableLiveData().observe(getActivity(), new Observer<List<Song>>() {
             @Override
             public void onChanged(List<Song> songs) {
-
+                MainActivity.songData.clear();
+                MainActivity.songData.addAll(songs);
                 songAdapter.setData(songs);
 
                 Log.d("TAG", "onChanged: "+ songs.toString());
@@ -66,6 +69,7 @@ public class SongFragment extends Fragment implements ISongClick {
         Bundle bundle = new Bundle();
         bundle.putSerializable(SONG_KEY, song);
         intent.putExtra(SONG_KEY, bundle);
+        Toast.makeText(getActivity(), "Ddax nhan vap song", Toast.LENGTH_SHORT).show();
         getActivity().startService(intent);
     }
 }
