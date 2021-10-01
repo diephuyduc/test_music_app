@@ -46,9 +46,17 @@ public class MusicService extends Service {
             song = (Song) intent.getBundleExtra(SONG_KEY).get(SONG_KEY);
             if (song != null) {
               //  mAction = MAction.PLAY;
+                if(mediaPlayer.isPlaying()){
+                    mediaPlayer.stop();
+                }
                 playSong(song);
                 isPlaying=true;
             }
+            else{
+                stopSelf();
+            }
+
+
 
 
         }
@@ -64,6 +72,16 @@ public class MusicService extends Service {
 
         handleAction(mAction);
         return START_REDELIVER_INTENT;
+    }
+    private void playOnComplete(){
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                mediaPlayer.stop();
+                isPlaying=false;
+                sendNext();
+            }
+        });
     }
 
     private void handleAction(MAction mAction) {
@@ -100,7 +118,7 @@ public class MusicService extends Service {
     }
 
     private void changeSongPre() {
-
+        mediaPlayer.pause();
         sendActionToMain(MAction.PREV);
         sendNotification(song);
     }
@@ -115,20 +133,26 @@ public class MusicService extends Service {
     public void playSong(Song song) {
         if (song != null) {
             mediaPlayer = MediaPlayer.create(getApplicationContext(), Uri.parse(song.getSongLink()));
-            mediaPlayer.start();
-            isPlaying = true;
-            sendNotification(song);
-            sendActionToMain(MAction.PLAY);
+            if(mediaPlayer!=null){
+                playOnComplete();
+                mediaPlayer.start();
+                isPlaying = true;
+                sendNotification(song);
+                sendActionToMain(MAction.PLAY);
+            }
 
         }
 
     }
     public void  resumeSong(){
         if(song!=null){
-            mediaPlayer.start();
-            isPlaying = true;
-            sendNotification(song);
-            sendActionToMain(MAction.PLAY);
+            if(mediaPlayer!=null){
+                mediaPlayer.start();
+                isPlaying = true;
+                sendNotification(song);
+                sendActionToMain(MAction.PLAY);
+            }
+
         }
     }
 
@@ -157,7 +181,14 @@ public class MusicService extends Service {
         startForeground(NOTIFICATION_ID, notificationBuilder);
 
     }
-
+    public void sendNext(){
+        Intent intent = new Intent(getApplicationContext(), ChangeSong.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(MY_ACTION_KEY, MAction.NEXT);
+        bundle.putSerializable(MY_SONG_KEY, song);
+        intent.putExtra(MY_SONG_KEY, bundle);
+        getApplicationContext().sendBroadcast(intent);
+    }
     public PendingIntent getPendingIntent(MAction mAction) {
 
         Intent intent = new Intent(getApplicationContext(), SongBroadcastReceiver.class);
